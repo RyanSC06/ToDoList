@@ -1,3 +1,5 @@
+// --------------------------------------------------------------------------------------------
+
 // PRIORITY OPTION
 const priorityBoxes = document.querySelectorAll('.priorities > button');
 let selectedBox = null;
@@ -18,7 +20,9 @@ priorityBoxes.forEach(box => {
     box.addEventListener('click', () => {
         if (selectedBox === box) {
             selectedBox = null;
-            priorityBoxes.forEach(b => b.style.opacity = '0.5');
+            priorityBoxes.forEach(b => {
+                b.style.opacity = '0.5';
+            });
         } else {
             selectedBox = box;
             priorityBoxes.forEach(b => {
@@ -39,7 +43,8 @@ function addTask() {
     let taskText = input.value.trim();
 
     if (!taskText) {
-        alert("Insert task description first!")
+        alert("Insert task description first!");
+        document.getElementById("taskInput").focus();
         return;
     }
 
@@ -53,14 +58,31 @@ function addTask() {
         return;
     }
 
+    let dueDate = document.getElementById("overdueChoose");
+    if (dueDate.value === "") {
+        dueDate = null;
+    } else {
+        dueDate = dueDate.value;
+    }
+    
     let li = document.createElement('li');
     textContent = selectedBox.textContent;
     
-    li.innerHTML = getListElmtTemplate(taskText, priorityAbbr[textContent], priorityColor[textContent]);
-    saveTask(taskText, priorityAbbr[textContent], getDayTag());
+    if (dueDate !== null && dueDate < getDayTag()) {
+        // OVERDUE SINCE ADDED
+        li.innerHTML = getOverdueElmtTemplate(taskText, priorityAbbr[textContent], priorityColor[textContent],
+                       getDayTag(), dueDate);
+        document.getElementById('overdueList').appendChild(li);
+    } else {
+        // NORMAL
+        li.innerHTML = getListElmtTemplate(taskText, priorityAbbr[textContent], priorityColor[textContent],
+                       null, dueDate);
+        document.getElementById('taskList').appendChild(li);
+    }
 
-    document.getElementById('taskList').appendChild(li);
+    saveTask(taskText, priorityAbbr[textContent], getDayTag(), dueDate);
     input.value = '';
+    document.getElementById("overdueChoose").value = '';
 }
 
 function removeTask(button, taskText) {
@@ -75,30 +97,37 @@ function toggleComplete(task) {
     const status = task.classList.toggle('completed');
     updateTasks(task);
 
-    button = task.parentElement.querySelector(".tagWrapper .doneButton");
+    button = task.parentElement.parentElement.querySelector(".tagWrapper .doneButton");
 
     if (status) {
         button.innerHTML = `<i class="fas fa-undo-alt"></i>`;
 
         const doneList = document.getElementById('doneList');
-        doneList.appendChild(task.parentElement);
+        doneList.appendChild(task.parentElement.parentElement);
     } else {
         button.innerHTML = `<i class="fas fa-check"></i>`;
 
         const taskList = document.getElementById('taskList');
-        taskList.appendChild(task.parentElement);
+        taskList.appendChild(task.parentElement.parentElement);
     }
 }
 
-function getListElmtTemplate(taskText, priorityAbbr, color, date=null, completed=false) {
+function getListElmtTemplate(taskText, priorityAbbr, color, date=null, dueDate=null, completed=false) {
     return (
-        `<span class="ellipsis ${completed ? 'completed' : ''}" onclick="toggleComplete(this)">${taskText}</span>
+        `<div class="taskWrapper">
+            <div class="dateWrapper">
+                <span class="dateTag">${date===null ? getDayTag() : date}</span>
+                ${dueDate!==null ? `<span class="dueDateTag">${dueDate}</span>` : ''}
+            </div>
+            <span class="task ${completed ? 'completed' : ''}" onclick="toggleComplete(this)"><p>${taskText}</p></span>
+         </div>
          <div class="tagWrapper">
-             <span class="dateTag">${date===null ? getDayTag() : date}</span>
              <span class="priorityTag" style="background-color: ${color};">${priorityAbbr}</span>
              <button class="deleteButton" onclick="removeTask(this, '${taskText}')"> <i class="fas fa-times"></i></button>
-             <button class="doneButton" onclick="toggleComplete(this.closest('.tagWrapper').previousElementSibling)">
-                ${completed ? '<i class="fas fa-undo-alt"></i>' : '<i class="fas fa-check"></i>'}
+             <button class="doneButton" onclick="toggleComplete (
+                this.closest('.tagWrapper').previousElementSibling.querySelector('.task')
+                )">
+                    ${completed ? '<i class="fas fa-undo-alt"></i>' : '<i class="fas fa-check"></i>'}
              </button>
          </div>`
     );
@@ -117,14 +146,29 @@ function deleteAllTask() {
         taskList.innerHTML = "";
 
         let tasks = getTaskFromStorage();
-        tasks = tasks.filter(task => task.completed === true);
+        tasks = tasks.filter(task => (task.completed === true || isOverdue(task) === true));
         localStorage.setItem('tasks', JSON.stringify(tasks));
     }
 }
 
 // --------------------------------------------------------------------------------------------
 
-//LOCAL STORAGE
+
+
+
+
+
+
+
+
+
+
+
+
+
+// --------------------------------------------------------------------------------------------
+
+// LOCAL STORAGE
 document.addEventListener('DOMContentLoaded', loadTasks);
 
 function getTaskFromStorage() {
@@ -139,9 +183,9 @@ function getTaskFromStorage() {
     return (tasks);
 }
 
-function saveTask(taskText, priorityAbbr, date) {
+function saveTask(taskText, priorityAbbr, date, dueDate) {
     let tasks = getTaskFromStorage();
-    tasks.push({text: taskText, priority: priorityAbbr, date: date, completed: false});
+    tasks.push({text: taskText, priority: priorityAbbr, date: date, dueDate: dueDate, completed: false});
     
     localStorage.setItem('tasks', JSON.stringify(tasks));
 }
@@ -161,26 +205,72 @@ function loadTasks() {
             color = "red";
         }
 
-        li.innerHTML = getListElmtTemplate(task.text, task.priority, color, task.date, task.completed);
-        if (task.completed === false) {
-            document.getElementById('taskList').appendChild(li);
+        if (isOverdue(task)) {
+            // OVERDUE
+            li.innerHTML = getOverdueElmtTemplate(task.text, task.priority, color, task.date, task.dueDate);
+            document.getElementById('overdueList').appendChild(li);
         } else {
-            document.getElementById('doneList').appendChild(li);
+            // NORMAL
+            li.innerHTML = getListElmtTemplate(task.text, task.priority, color, task.date, task.dueDate, task.completed);
+
+            if (task.completed === false) {
+                document.getElementById('taskList').appendChild(li);
+            } else {
+                document.getElementById('doneList').appendChild(li);
+            }
         }
     });
+
+    // AUTOMATIC REFRESH
+    const now = new Date();
+    const millisUntilMidnight = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 0) - now;
+    
+    // Tunggu hingga tengah malam
+    setTimeout(() => {
+        loadTasks();
+        // Refresh otomatis setiap 24 jam
+        setInterval(loadTasks, 86400000);
+    }, millisUntilMidnight);
 }
 
-function updateTasks(taskText) {
+function updateTasks(taskElmt) {
     let tasks = getTaskFromStorage();
 
     tasks.forEach((task) => {
-        if (task.text === taskText.innerHTML) {
+        if (task.text === taskElmt.querySelector("p").textContent) {
             task.completed = !task.completed;
         }
     });
 
     localStorage.setItem('tasks', JSON.stringify(tasks));
 }
+
+// --------------------------------------------------------------------------------------------
+
+// OVERDUE
+function isOverdue(task) {
+    return (task.dueDate !== null && task.dueDate < getDayTag() 
+            && task.completed === false);
+}
+
+function getOverdueElmtTemplate(taskText, priorityAbbr, color, date, dueDate) {
+    return (
+        `<div class="taskWrapper">
+            <div class="dateWrapper">
+                <span class="dateTag">${date}</span>
+                <span class="dueDateTag">${dueDate}</span>
+            </div>
+            <span class="task"><p>${taskText}</p></span>
+         </div>
+         <div class="tagWrapper">
+             <span class="priorityTag" style="background-color: ${color};">${priorityAbbr}</span>
+             <button class="deleteButton" onclick="removeTask(this, '${taskText}')"> <i class="fas fa-times"></i></button>
+         </div>`
+    );
+}
+
+// --------------------------------------------------------------------------------------------
+
 
 
 
@@ -273,7 +363,7 @@ function getDayTag() {
     const month = today.getMonth() + 1;
     const year = today.getFullYear();
 
-    return (`${checkTime(day)}-${checkTime(month)}-${year}`);
+    return (`${year}-${checkTime(month)}-${checkTime(day)}`);
 }
 
 // --------------------------------------------------------------------------------------------
@@ -342,3 +432,5 @@ function saveProfile(name, position) {
     let profile = {name: name, position: position};
     localStorage.setItem('profile', JSON.stringify(profile));
 }
+
+// --------------------------------------------------------------------------------------------

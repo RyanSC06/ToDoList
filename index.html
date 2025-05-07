@@ -47,6 +47,10 @@
                 <button class="priorityOption" style="background-color: orange;">MEDIUM</button>
                 <button class="priorityOption" style="background-color: red;">HIGH</button>
             </div>
+            <div class="overdueInput">
+                <p>Choose due date (optional):</p>
+                <input id="overdueChoose" type="date">
+            </div>
             <button onclick="addTask()">Add</button>
             <button class="deleteButton" onclick="deleteAllTask()"><i class="fas fa-trash"></i></button>
         </div>
@@ -56,6 +60,14 @@
     <div id="Done" class="container done">
         <h3>DONE</h3>
         <ul id="doneList"></ul>
+    </div>
+
+    <div id="Overdue" class="container done">
+        <h3><i class="fas fa-exclamation-circle"></i>
+            OVERDUE
+            <i class="fas fa-exclamation-circle"></i>
+        </h3>
+        <ul id="overdueList"></ul>
     </div>
 
     <script src='src/main.js'></script>

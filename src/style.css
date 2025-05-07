@@ -130,6 +130,17 @@ button {
     opacity: 0.5;
 }
 
+.overdueInput {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+}
+
+.overdueInput p {
+    margin: 0;
+    padding: 0 0 10px 0;
+}
+
 /* ------------------------------------------ */
 
 ul {
@@ -149,13 +160,39 @@ li {
     justify-content: space-between;
 }
 
-li .ellipsis:hover {
+li p {
+    text-align: left;
+    margin: 5px 0 0 3px;
+    max-width: 90%;
+}
+
+li p:hover {
     cursor: pointer;
 }
 
 .completed {
     text-decoration: line-through;
     color: gray;
+}
+
+
+
+
+
+.taskWrapper {
+    display: flex;
+    flex-direction: column;
+}
+
+.dateWrapper {
+    display: flex;
+    flex-direction: row;
+}
+
+.tagWrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
 }
 
 .dateTag {
@@ -172,15 +209,22 @@ li .ellipsis:hover {
     margin-right: 5px;
 }
 
+.dueDateTag {
+    background-color: crimson;
+    font-size: small;
+    color: white;
+    white-space: nowrap;
+
+    border: 1px solid;
+    border-radius: 20px;
+    border-color: black;
+
+    padding: 5px;
+}
+
 .priorityTag {
     padding: 5px;
     margin-right: 5px;
     border-radius: 24px;
     color: white;
-}
-
-.tagWrapper {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
 }
