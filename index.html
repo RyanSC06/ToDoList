@@ -6,15 +6,58 @@
     <title>To Do List</title>
     <meta name='viewport' content='width=device-width, initial-scale=1'>
     <link rel='stylesheet' type='text/css' media='screen' href='src/style.css'>
-    <script src='src/main.js'></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
 
-<body>
-    <div class="container">
+<body onload="insertDateTime()">
+    <div class="profile">
+        <div class="date" id="date">Memuat tanggal...</div>
+        <div class="time" id="time">Memuat waktu...</div>
+        
+        <div class="wrapper">
+            <span id="name" class="ellipsis"><p><b>Name</b>: -</p></span>
+            <div class="profileInput" id="nameInput">
+                <p><b>Name</b>:&nbsp;&nbsp;</p>
+                <input type="text" class="inputBox" placeholder="Masukkan nama">
+            </div>
+            <div class="editButton" id="nameEdit">
+                <i class="fas fa-pencil-alt"></i>
+            </div>
+        </div>
+
+        <div class="wrapper">
+            <span id="position" class="ellipsis"><p><b>Position</b>: -</p></span>
+            <div class="profileInput" id="positionInput">
+                <p><b>Position</b>:&nbsp;&nbsp;</p>
+                <input type="text" class="inputBox" placeholder="Masukkan jabatan">
+            </div>
+            <div class="editButton" id="positionEdit">
+                <i class="fas fa-pencil-alt"></i>
+            </div>
+        </div>
+    </div>
+
+    <div id="ToDo" class="container">
         <h1>TO DO LIST</h1>
-        <input type="text" id="taskInput" placeholder="Enter a new task">
-        <button onclick="addTask()">Add</button>
+        <div class="content">
+            <input type="text" id="taskInput" placeholder="Enter a new task">
+            <div class="priorities" id="priorities">
+                <p>Choose priority:</p>
+                <button class="priorityOption" style="background-color: green;">LOW</button>
+                <button class="priorityOption" style="background-color: orange;">MEDIUM</button>
+                <button class="priorityOption" style="background-color: red;">HIGH</button>
+            </div>
+            <button onclick="addTask()">Add</button>
+            <button class="deleteButton" onclick="deleteAllTask()"><i class="fas fa-trash"></i></button>
+        </div>
         <ul id="taskList"></ul>
     </div>
+
+    <div id="Done" class="container done">
+        <h3>DONE</h3>
+        <ul id="doneList"></ul>
+    </div>
+
+    <script src='src/main.js'></script>
 </body>
 </html>

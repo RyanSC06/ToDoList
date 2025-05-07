@@ -1,17 +1,136 @@
 body {
     font-family: Arial, Arial, Helvetica, sans-serif;
     text-align: center;
-    margin: 50px;
+    margin-top: 50px;
 }
 
 .container {
     max-width: 400px;
     margin: auto;
-    padding: 20px;
+    padding: 7px;
     background-color: #f4f4f4;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0,0,0, 0.1);
 }
+
+.done {
+    margin: auto;
+    margin-top: 40px;
+    margin-bottom: 40px;
+    opacity: 0.5;
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+}
+
+.deleteButton {
+    background-color: crimson;
+}
+
+.doneButton {
+    background-color: darkcyan;
+}
+
+button {
+    background: blue;
+    color: white;
+    cursor: pointer;
+
+    border: none;
+    padding: 5px 10px;
+}
+
+/* ------------------------------------------ */
+
+.profile {
+    background-color: antiquewhite;
+    border: 1px solid;
+    border-radius: 24px;
+
+    margin: auto;
+    margin-bottom: 40px;
+    padding: 10px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    
+    max-width: 400px;
+    height: fit-content;
+}
+
+.wrapper {
+    display: flex;
+    flex-direction: row;
+    
+    width: 100%;
+    height: fit-content;
+    margin-top: 10px;
+    
+    align-items: center;
+    justify-content: space-between;
+
+    background-color: wheat;
+    border-radius: 10px;
+}
+
+.ellipsis {
+    text-align: left;
+    padding: 0 0 0 5px;
+    width: 80%;
+}
+
+.ellipsis p {
+    margin: 0;
+    padding: 0;
+    
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.editButton {
+    position: relative;
+    cursor: pointer;
+}
+
+.profileInput {
+    display: none;
+    align-items: center;
+}
+
+.inputBox {
+    height: 30px;
+    font-size: 14px;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* ------------------------------------------ */
+
+.priorities {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+    margin-top: 20px;
+}
+
+.priorities p {
+    margin: 0;
+    padding: 0 0 10px 0;
+}
+
+.priorities div {
+    transition: opacity 0.3s ease;
+}
+
+.priorityOption {
+    opacity: 0.5;
+}
+
+/* ------------------------------------------ */
 
 ul {
     list-style: none;
@@ -20,12 +139,18 @@ ul {
 
 li {
     background: white;
+
     margin: 5px 0;
     padding: 10px;
     border-radius: 4px;
+
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    justify-content: space-between;
+}
+
+li .ellipsis:hover {
+    cursor: pointer;
 }
 
 .completed {
@@ -33,10 +158,29 @@ li {
     color: gray;
 }
 
-button {
-    background: blue;
+.dateTag {
+    background-color: slategrey;
+    font-size: small;
     color: white;
-    border: none;
-    padding: 5px 10px;
-    cursor: pointer;
+    white-space: nowrap;
+
+    border: 1px solid;
+    border-radius: 20px;
+    border-color: black;
+
+    padding: 5px;
+    margin-right: 5px;
+}
+
+.priorityTag {
+    padding: 5px;
+    margin-right: 5px;
+    border-radius: 24px;
+    color: white;
+}
+
+.tagWrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
 }
